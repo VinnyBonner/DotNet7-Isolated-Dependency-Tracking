@@ -314,3 +314,5 @@ For detailed output, run func with --verbose flag.
 [2023-02-16T21:07:51.424Z] HttpContext has ClaimsPrincipal; parsing to gRPC.
 [2023-02-16T21:07:51.432Z] Writing invocation request invocationId: e48087af-365d-4da1-bbe6-817f0abc9b1d to workerId: dd34e645-ca3b-4ce1-9407-6cc4c820d62c
 ```
+
+That is it. The process does not proceed, crash or provide any further details. The Http Request times out and I have to kill the running process. 
