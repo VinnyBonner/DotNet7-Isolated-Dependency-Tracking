@@ -5,7 +5,7 @@ Which is needed for the preview feature.
 
 With Verbose logging and executing the function:
 
-
+```
 Azure Functions Core Tools
 Core Tools Version:       4.0.4915 Commit hash: N/A  (64-bit)
 Function Runtime Version: 4.14.0.19631
@@ -313,3 +313,4 @@ For detailed output, run func with --verbose flag.
 [2023-02-16T21:07:51.407Z] Posting invocation id:e48087af-365d-4da1-bbe6-817f0abc9b1d on workerId:dd34e645-ca3b-4ce1-9407-6cc4c820d62c
 [2023-02-16T21:07:51.424Z] HttpContext has ClaimsPrincipal; parsing to gRPC.
 [2023-02-16T21:07:51.432Z] Writing invocation request invocationId: e48087af-365d-4da1-bbe6-817f0abc9b1d to workerId: dd34e645-ca3b-4ce1-9407-6cc4c820d62c
+```
