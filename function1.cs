@@ -1,53 +1,57 @@
 using System.Net;
-using System.Net.Http;
-using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 
-namespace FunctionApp14
+namespace Dotnet_Isolated_Repro
 {
-    public class Function1
+    public class Function2
     {
         private readonly ILogger _logger;
 
-        public Function1(ILoggerFactory loggerFactory)
+        public Function2(ILoggerFactory loggerFactory)
         {
-            _logger = loggerFactory.CreateLogger<Function1>();
+            _logger = loggerFactory.CreateLogger<Function2>();
         }
-
         private static HttpClient httpClient = new HttpClient();
 
-        [Function("Function1")]
-        public HttpResponseData Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req)
+        [Function(nameof(Function2))]
+        public async Task<HttpResponseData> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req,
+            FunctionContext executionContext)
         {
+
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
+
             try
             {
-                _logger.LogInformation("C# HTTP trigger function processed a request.");
+                // Get the connection string from app settings and use it to create a connection.
+                var str = Environment.GetEnvironmentVariable("sqlConnStr");
+                using (SqlConnection conn = new SqlConnection(str))
+                {
+                    conn.Open();
+                    var text = "UPDATE SalesLT.SalesOrderHeader SET [ModifiedDate] = GetDate();";
 
-                var res = httpClient.GetAsync("https://google.com").Result;
-
-                _logger.LogInformation("Response: " + res.StatusCode);
-
-                var response = req.CreateResponse(HttpStatusCode.OK);
-                response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
-
-                var body = res.Content.ReadAsStringAsync().Result;
-
-                response.WriteString(body);
-
-
-                return response;
+                    using (SqlCommand cmd = new SqlCommand(text, conn))
+                    {
+                        // Execute the command and log the # rows affected.
+                        var rows = await cmd.ExecuteNonQueryAsync();
+                        _logger.LogInformation($"{rows} rows were updated");
+                        response.WriteString($"{rows} rows were updated");
+                    }
+                }
             }
             catch (Exception ex)
             {
                 _logger.LogError("Error: " + ex.ToString());
-                var response = req.CreateResponse(HttpStatusCode.BadRequest);
-                response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
+                
+                response = req.CreateResponse(HttpStatusCode.BadRequest);                
                 response.WriteString(ex.ToString());
-
-                return response;
             }
 
+            return response;
         }
     }
 }
