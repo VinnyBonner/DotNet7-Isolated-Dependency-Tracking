@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "Dotnet_Isolated_Rerpo": {
-      "commandName": "Project",
-      "commandLineArgs": "--port 7199",
-      "launchBrowser": false
-    }
-  }
-}
