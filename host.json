@@ -1,13 +1,11 @@
 {
-    "version": "2.0",
-    "logging": {
-        "fileLoggingMode": "always",
-        "logLevel": {
-            "default": "Trace",
-            "Host.Results": "Trace",
-            "Function": "Trace",
-            "Host.Aggregator": "Trace",
-            "Microsoft": "Trace"
-        }
+  "version": "2.0",
+  "logging": {
+    "applicationInsights": {
+      "enableDependencyTracking": true
+    },
+    "dependencyTrackingOptions": {
+      "enableSqlCommandTextInstrumentation": true
     }
+  }
 }
